@@ -26,6 +26,7 @@ class Renderer:
 
         resolution_x, resolution_y = self._resolution
         self._screen = np.ones((resolution_y, resolution_x, 3), "uint8") * 120
+        self._z_buffer = np.ones((resolution_y, resolution_y)) * -np.inf
 
         x_min, y_min, x_max, y_max = self._viewport
         self._range_x = np.linspace(x_min, x_max, resolution_x)
@@ -68,6 +69,10 @@ class Renderer:
 
     def _render_triangle(self, points, color):
         bounding_box = _get_bounding_box(points)
+        try:
+            delta_z = _calculate_delta_z(points)
+        except np.linalg.LinAlgError:
+            return
 
         for screen_x, scene_x in enumerate(self._range_x):
             if scene_x < bounding_box[0, 0] or scene_x > bounding_box[1, 0]:
@@ -77,7 +82,14 @@ class Renderer:
                     continue
                 if not _point_in_triangle(np.array([scene_x, scene_y, 0]), points):
                     continue
+                depth = (
+                    points[0][2]
+                    + (np.array([scene_x, scene_y]) - points[0][:2]) @ delta_z
+                )
+                if depth <= self._z_buffer[screen_y, screen_x]:
+                    continue
                 self._screen[screen_y, screen_x, :] = color
+                self._z_buffer[screen_y, screen_x] = depth
 
 
 def _sign(p1, p2, p3):
@@ -123,3 +135,11 @@ def _get_z_rotation_matrix(angle):
             [0, 0, 1],
         ]
     )
+
+
+def _calculate_delta_z(points):
+    v_ab = points[1] - points[0]
+    v_ac = points[2] - points[0]
+    slope = np.array([v_ab[:2], v_ac[:2]])
+    zs = np.array([v_ab[2], v_ac[2]])
+    return np.linalg.solve(slope, zs)
