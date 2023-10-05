@@ -5,5 +5,4 @@ Small script for rendering objects in orthographic projection in python and nump
 ## Examples:
 ![caption](sherman_tank.png)
 
-https://github.com/Pawix5k/tiny-isometric-renderer/assets/35242389/092a0e47-b66f-459a-947f-0aacb8045c1d
 [tank_desert_scene.webm](https://github.com/Pawix5k/tiny-isometric-renderer/assets/35242389/a0fd9dbb-980c-4f9a-8f22-301b1a9a4227)
