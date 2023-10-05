@@ -1,6 +1,7 @@
 import numpy as np
 
 from renderer import Renderer, Object3D
+from sherman import sherman
 
 WHITE = [255, 255, 255]
 YELLOW = [200, 200, 0]
@@ -67,10 +68,10 @@ cube = Object3D(cube_points, cube_triangles, cube_colors)
 
 
 renderer = Renderer(
-    [cube],
+    [sherman],
     (-2, -2, 2, 2),
     (300, 300),
-    camera_angle=np.deg2rad(45),
+    camera_angle=np.deg2rad(-45),
     camera_pitch=np.deg2rad(60),
 )
 renderer.render_scene("scene.png")
