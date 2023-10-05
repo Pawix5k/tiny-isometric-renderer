@@ -26,7 +26,7 @@ class Renderer:
 
         resolution_x, resolution_y = self._resolution
         self._screen = np.ones((resolution_y, resolution_x, 3), "uint8") * 120
-        self._z_buffer = np.ones((resolution_y, resolution_y)) * -np.inf
+        self._z_buffer = np.ones((resolution_y, resolution_x)) * -np.inf
 
         x_min, y_min, x_max, y_max = self._viewport
         self._range_x = np.linspace(x_min, x_max, resolution_x)
