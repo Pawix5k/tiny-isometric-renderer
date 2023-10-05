@@ -48,53 +48,26 @@ cube_triangles = np.array(
 
 cube_colors = np.array(
     [
-        YELLOW,
-        YELLOW,
         WHITE,
         WHITE,
-        ORANGE,
-        ORANGE,
-        RED,
-        RED,
-        GREEN,
-        GREEN,
-        BLUE,
-        BLUE,
+        WHITE,
+        WHITE,
+        WHITE,
+        WHITE,
+        WHITE,
+        WHITE,
+        WHITE,
+        WHITE,
+        WHITE,
+        WHITE,
     ]
 )
 
 cube = Object3D(cube_points, cube_triangles, cube_colors)
 
-tr_points = np.array(
-    [
-        [-2, -0.5, 0.5],
-        [0, 1, 0.5],
-        [3, -1, 0.5],
-        [-2, -0.5, 0],
-        [0, 1, 0],
-        [3, -1, 0],
-        [-2, -0.5, -0.5],
-        [0, 1, -0.5],
-        [3, -1, -0.5],
-    ]
-)
-
-
-tr_triangles = np.array(
-    [
-        [0, 1, 2],
-        [6, 7, 8],
-        [3, 4, 5],
-    ]
-)
-
-tr_colors = np.array([GREEN, YELLOW, RED])
-
-triangles = Object3D(tr_points, tr_triangles, tr_colors)
-
 
 renderer = Renderer(
-    [triangles],
+    [cube],
     (-2, -2, 2, 2),
     (300, 300),
     camera_angle=np.deg2rad(45),

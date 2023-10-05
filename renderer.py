@@ -33,6 +33,7 @@ class Renderer:
         self._range_y = np.linspace(y_max, y_min, resolution_y)
 
         self._camera_dir = np.array([0, 0, -1])
+        self._light_dir = _normalize_vector(np.array([1, -1, -1]))
 
     def render_scene(self, output_path):
         for object_3d in self._objects:
@@ -73,6 +74,7 @@ class Renderer:
             delta_z = _calculate_delta_z(points)
         except np.linalg.LinAlgError:
             return
+        shaded_color = self._calculate_color(points, color)
 
         for screen_x, scene_x in enumerate(self._range_x):
             if scene_x < bounding_box[0, 0] or scene_x > bounding_box[1, 0]:
@@ -88,8 +90,20 @@ class Renderer:
                 )
                 if depth <= self._z_buffer[screen_y, screen_x]:
                     continue
-                self._screen[screen_y, screen_x, :] = color
+                self._screen[screen_y, screen_x, :] = shaded_color
                 self._z_buffer[screen_y, screen_x] = depth
+
+    def _calculate_color(self, points, color):
+        v_ba = points[0] - points[1]
+        v_bc = points[2] - points[1]
+        surface_unit_vector = _normalize_vector(np.cross(v_ba, v_bc))
+        factor = 1 - (np.dot(self._light_dir, surface_unit_vector) + 1) / 2
+
+        r, g, b = color
+        r = int(factor * r)
+        g = int(factor * g)
+        b = int(factor * b)
+        return np.array([r, g, b], "uint8")
 
 
 def _sign(p1, p2, p3):
@@ -143,3 +157,7 @@ def _calculate_delta_z(points):
     slope = np.array([v_ab[:2], v_ac[:2]])
     zs = np.array([v_ab[2], v_ac[2]])
     return np.linalg.solve(slope, zs)
+
+
+def _normalize_vector(p):
+    return 1 / np.sqrt((p**2).sum()) * p
